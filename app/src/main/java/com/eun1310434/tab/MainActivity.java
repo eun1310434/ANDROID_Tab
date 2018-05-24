@@ -1,12 +1,12 @@
 /*=====================================================================
 □ Infomation
-  ○ Data : 07.03.2018
+  ○ Data : 21.05.2018
   ○ Mail : eun1310434@naver.com
   ○ Blog : https://blog.naver.com/eun1310434
   ○ Reference : Do it android app Programming
 
 □ Function
-  ○
+  ○ Listenr를 활용한 데이터 저장
 
 □ Study
   ○
@@ -25,23 +25,51 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     Fragment1 fragment1;
+    String fragment1_data = null;
+
     Fragment2 fragment2;
+    String fragment2_data = null;
+
     Fragment3 fragment3;
+    String fragment3_data = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar); // activity_main에서 만든 toolbar를 설정
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false); //ActionBar의 이름을 갖고 오지 않는다.
 
         fragment1 = new Fragment1();
-        fragment2 = new Fragment2();
-        fragment3 = new Fragment3();
+        fragment1.setOnDataListener(new Fragment1.OnDataListener() {
+            @Override
+            public void OnDataListener(String data) {
+                fragment1_data = data ;
+            }
+        });
 
-        getSupportFragmentManager().beginTransaction().add(R.id.container, fragment1).commit();
+        fragment2 = new Fragment2();
+        fragment2.setOnDataListener(new Fragment2.OnDataListener() {
+            @Override
+            public void OnDataListener(String data) {
+                fragment2_data = data ;
+            }
+        });
+
+        fragment3 = new Fragment3();
+        fragment3.setOnDataListener(new Fragment3.OnDataListener() {
+            @Override
+            public void OnDataListener(String data) {
+                fragment3_data = data;
+            }
+        });
+
+        getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.container, fragment1).commit();
+        fragment1.setData(fragment1_data);
 
 
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
@@ -66,12 +94,16 @@ public class MainActivity extends AppCompatActivity {
         Fragment selected = null;
         if (position == 0) {
             selected = fragment1;
+            fragment1.setData(fragment1_data);
         } else if (position == 1) {
             selected = fragment2;
+            fragment2.setData(fragment2_data);
         } else if (position == 2) {
             selected = fragment3;
+            fragment3.setData(fragment3_data);
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, selected).commit();
-    }
 
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, selected).addToBackStack(null).commit();
+
+    }
 }

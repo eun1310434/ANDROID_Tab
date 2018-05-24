@@ -1,12 +1,12 @@
 /*=====================================================================
 □ Infomation
-  ○ Data : 07.03.2018
+  ○ Data : 21.05.2018
   ○ Mail : eun1310434@naver.com
   ○ Blog : https://blog.naver.com/eun1310434
   ○ Reference : Do it android app Programming
 
 □ Function
-  ○
+  ○ Listenr를 활용한 데이터 저장
 
 □ Study
   ○
@@ -26,11 +26,40 @@ import android.widget.TextView;
 public class Fragment2 extends Fragment {
     TextView tv;
     Button button;
+    String data = "Fragment 2";
+
+    //인터페이스를 활용하여 리스너 새로 정의
+    //innerClass
+    public interface OnDataListener {
+        void OnDataListener(String data);
+    }
+
+    //리스너 객체
+    private Fragment2.OnDataListener listener; //
+
+    public void setOnDataListener(Fragment2.OnDataListener onProgressListener){
+        // 해당 클래스를 활용하는 곳에서 setOnDateTimeChangedListener를 선언시
+        // OnDateTimeChangedListener 생성
+        this.listener = onProgressListener;
+    }
+
+
+
+    public void setData(String data){
+        if(data == null){
+            this.data = "Fragment 2";
+        }else{
+            this.data = data;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment2, container, false);
+        Log.e("onCreateView", "onCreateView()");
+
         tv = (TextView)  rootView.findViewById(R.id.textview);
+        tv.setText(data);
         button = (Button) rootView.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,15 +67,27 @@ public class Fragment2 extends Fragment {
                 tv.append("\nClick");
             }
         });
-
         return rootView;
     }
 
+
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // 데이터 저장
-        outState.putString("data", tv.getText().toString());
-        Log.e("data", tv.getText().toString());
+    public void onStart() {
+        super.onStart();
+        Log.e("onStart", "onStart()");
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("onPause", "onPause()");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("onStop", "onStop()");
+        listener.OnDataListener(tv.getText().toString());
+    }
+
 }
